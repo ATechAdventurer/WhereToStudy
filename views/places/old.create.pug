@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 New Place
+  form(id='place-create', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='title') Title <span>*</span>
+      .col-md-7
+        input.form-control(type='text', name='title', id='title', placeholder='Title', autofocus, required)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='description') Description
+      .col-md-7
+        input.form-control(type='textarea', name='description', id='description', placeholder='Description', required)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='address') Address
+      .col-md-7
+        input.form-control(type='text', name='address', id='address', placeholder='address', required)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='website') Website
+      .col-md-7
+        input.form-control(type='text', name='website', id='website', placeholder='website')
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='website') Do they have free WiFi?
+      .col-md-1
+        input(type='checkbox', name='wifi', id='wifi', style="margin-top: 12px;")
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='website') Are outlets avaliable there?
+      .col-md-1
+        input(type='checkbox', name='outlets', id='outlets', style="margin-top: 12px;")
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='website') Is this place normally quiet?
+      .col-md-1
+        input(type='checkbox', name='wifi', id='wifi', style="margin-top: 12px;")
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='website') Is this a place where you could meet with a group?
+      .col-md-1
+        input(type='checkbox', name='outlets', id='outlets', style="margin-top: 12px;")
+  
+
+    .form-group.offset-sm-3.col-md-7.pl-2
+      button.btn.btn-success(type='submit')
+        i.fas.fa-user-plus.fa-sm
+        | Create

@@ -1,0 +1,279 @@
+extends layout
+
+block content
+  form.ratingForm(method='POST', action="/ratings/new", target="hidden-form" )
+    input.csrf(type='hidden', name='_csrf', value=_csrf)
+    input.placeID(type='hidden', name='currentPlaceID', value='')
+    input.ratingVal(type='hidden', name='chosenRating', value='')
+  .mainContent
+    .sidebar
+      #listings.listings
+    #map.map
+
+    script.
+      var map;
+      let storedFeature = null
+      var localStoresCache = {};
+      var Category = function (name) {
+        this.name = name || "";
+        this._ignoreMe = '#{categories}'.replace(/&quot;/g, '"')
+        this._allData = JSON.parse(this._ignoreMe)
+        this.getAll = () => this._allData[this.name]
+
+        this.getTitle = () => this._allData[this.name].title || this.name;
+
+        this.getMarkerClass = () => {
+          //console.log("I was called: ", this.name, this._allData)
+          return this._allData[this.name] !== undefined ? this._allData[this.name].marker : "coworking" 
+        }
+      }
+    script(src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.js")
+    script(src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js")
+    script.
+      let hasLocation = false;
+      mapboxgl.accessToken = 'pk.eyJ1IjoibWFub3N0ZWVsZSIsImEiOiJjamhtanE1OWswZWFmM2RyeDd3M3pleDdnIn0.Ccam63uwLV2GkhuDt-8DlQ'
+      console.log("I am v2")
+      navigator.geolocation.getCurrentPosition((position) => {
+          console.log(position)
+          hasLocation = true
+          run(position)
+      }, (error) => {
+          run(null)
+      });
+
+
+      function setRating(place, score) {
+          console.log("Attempting to send a rating")
+
+          $.ajax({
+              type: "POST",
+              url: "/ratings/new",
+              data: `_csrf=${$('.csrf').val()}&placeid=${place}&rating=${score}`,
+          });
+
+          localStoresCache[place] = { rating: score };
+          createPopUp(storedFeature);
+      }
+
+      function run(location) {
+          if (!('remove' in Element.prototype)) {
+          
+              Element.prototype.remove = function () {
+                  if (this.parentNode) {
+                      this.parentNode.removeChild(this);
+                  }
+              };
+          }
+
+          map = new mapboxgl.Map({
+              // container id specified in the HTML
+              container: 'map',
+              // style URL
+              style: 'mapbox://styles/mapbox/dark-v10',
+              // initial position in [long, lat] format
+              center: [getcoordtype("longitude", location), getcoordtype("latitude", location)],
+              // initial zoom
+              zoom: 13,
+              scrollZoom: true
+          });
+          map.on('load', function (e) {
+          
+              $.get(`/api/getPlaces${"/location=" + getcoordtype("longitude", location) + "," + getcoordtype("latitude", location)}`, function (data) {
+                  var stores = data;
+                  // This is where your interactions with the symbol layer used to be
+                  // Now you have interactions with DOM markers instead
+                  stores.features.forEach(function (marker, i) {
+                      // Create an img element for the marker
+                      var el = document.createElement('div');
+                      el.id = "marker-" + i;
+                      /*var MarkerTypes = {
+                          "Café": "coffeeShop",
+                          "Coffee Shop": "coffeeShop",
+                          "Resturant": "resturant",
+                          "Coworking Space": "coworking",
+                          "Donut Shop": "coffeeShop",
+                          "Bubble Tea Shop": "coffeeShop",
+                          "Starbucks": "starbucks"
+                      }*/
+
+                      let category = new Category(marker.properties.category)
+                      el.className = category.getMarkerClass();
+
+                      // Add markers to the map at all points
+                      new mapboxgl.Marker(el, {
+                          offset: [0, -23]
+                      }).setLngLat(marker.geometry.coordinates)
+                          .addTo(map);
+                      el.addEventListener('click', function (e) {
+                          console.dir(marker);
+                          // 1. Fly to the point
+                          flyToStore(marker);
+                          // 2. Close all other popups and display popup for clicked store
+                          createPopUp(marker);
+                          // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+                          var activeItem = document.getElementsByClassName('active');
+                          e.stopPropagation();
+                          if (activeItem[0]) {
+                              activeItem[0].classList.remove('active');
+                          }
+                          var listing = document.getElementById('listing-' + i);
+                          listing.classList.add('active');
+                      });
+                  });
+                  // This is where your '.addLayer()' used to be, instead add only the source without styling a layer
+                  map.addSource("places", {
+                      "type": "geojson",
+                      "data": stores
+                  });
+                  // Initialize the list
+                  buildLocationList(stores);
+
+                  map.on('click', 'states-layer', function (e) {
+                  
+                  
+                      new mapboxgl.Popup()
+                          .setLngLat(e.lngLat)
+                          .setHTML(e.features[0].properties.name)
+                          .addTo(map);
+                  });
+
+              });
+          });
+      }
+      function flyToStore(currentFeature) {
+          map.flyTo({
+              center: [currentFeature.geometry.coordinates[0] + .0029, currentFeature.geometry.coordinates[1] + .0017],
+              zoom: 15
+          });
+      }
+
+      function renderFeatures(currentFeature) {
+          let allproperties = ["outlets", "wifi", "quiet"]
+          let output = ""
+          allproperties.forEach(property => {
+              output += features(currentFeature, property)
+          })
+          return output;
+      }
+
+      function features(feature, property) {
+          let classes = {
+              "outlets": {
+                  icon: "fa-bolt",
+                  title: "Outlets"
+              },
+              "wifi": {
+                  icon: "fa-wifi",
+                  title: "Free Wifi"
+              },
+              "quiet": {
+                  icon: "fa-volume-off",
+                  title: "Quiet"
+              },
+              "costs": {
+                  icon: "fa-dollar-sign",
+                  title: "Not-Free"
+              }
+          }
+          return feature.properties.features.includes(property) ? `<span class="badge badge-primary badge-right ${property}-badge"><i class="fa ${classes[property].icon}"></i>${classes[property].title}</span>` : "";
+      }
+      function ratingController(id, initalScore) {
+          var output = ``;
+          for (var i = 1; i < 6; i++) {
+              output += `<i id="${id + "-" + i}" class="fa fa-star ${initalScore >= i ? "star-on" : "star-off"}"  aria-hidden="true" onclick="setRating('${id}', ${i});"></i>`;
+          }
+          return output;
+      }
+
+      function PopupGenerator(feature) {
+          var cat = new Category(feature.properties.category)
+          let { id, address, name, state, city, category, rating, description } = feature.properties
+          let formattedAddress = address == undefined ? "" : address;
+          formattedAddress.replace(" undefined", "")
+          if (id in localStoresCache) {
+              return `<a href="https://www.google.com/maps/search/?api=1&query=${formattedAddress} ${city} ${state}"><h3 class="${cat.getMarkerClass()}-heading"> ${name} </h3></a>
+                        <h4>${description}</h4>
+
+                        <div class="start-holder">
+                          ${ratingController(id, localStoresCache[id].rating)}
+                        </div>
+                        <div class="label-holder">
+                            ${renderFeatures(feature)}
+                        </div>`
+          }
+          return `<a href="https://www.google.com/maps/search/?api=1&query=${formattedAddress} ${city} ${state}"><h3 class="${cat.getMarkerClass()}-heading"> ${name} </h3></a>
+                        <h4>${description}</h4>
+                        <div class="start-holder">
+                          ${ratingController(id, rating)}
+                        </div>
+                        <div class="label-holder">
+                            ${renderFeatures(feature)}
+                        </div>`
+      }
+
+      function createPopUp(currentFeature) {
+          var cat = new Category(currentFeature.properties.category)
+          var popUps = document.getElementsByClassName('mapboxgl-popup');
+          if (popUps[0]) popUps[0].remove();
+          storedFeature = currentFeature;
+          console.log(currentFeature)
+          var popup = new mapboxgl.Popup({
+              closeOnClick: false,
+              className: cat.getMarkerClass()
+          })
+              .setLngLat(currentFeature.geometry.coordinates)
+              .setHTML(PopupGenerator(currentFeature))
+              .addTo(map);
+      }
+
+      function buildLocationList(data) {
+          for (i = 0; i < data.features.length; i++) {
+              var currentFeature = data.features[i];
+              var prop = currentFeature.properties;
+              if (data.features[i].properties.address == undefined) {
+                  prop.address = "";
+              }
+              var listings = document.getElementById('listings');
+              var listing = listings.appendChild(document.createElement('div'));
+              listing.className = 'item';
+              listing.id = "listing-" + i;
+              var link = listing.appendChild(document.createElement('a'));
+
+              link.href = '#';
+              link.className = 'title';
+              link.dataPosition = i;
+              link.innerHTML = prop.name;
+
+              var details = listing.appendChild(document.createElement('div'));
+              details.innerHTML = prop.city;
+
+              if (prop.phone) {
+                  details.innerHTML += ' &middot; ' + prop.phoneFormatted;
+              }
+
+              link.addEventListener('click', function (e) {
+                  var clickedListing = data.features[this.dataPosition];
+                  flyToStore(clickedListing);
+                  createPopUp(clickedListing);
+                  var activeItem = document.getElementsByClassName('active');
+                  if (activeItem[0]) {
+                      activeItem[0].classList.remove('active');
+                  }
+                  this.parentNode.classList.add('active');
+              });
+          }
+      }
+
+      function getcoordtype(type, location) {
+          var defaults = {
+              longitude: -96.7970,
+              latitude: 32.9919797
+          }
+          if (location == null) {
+              return parseFloat(defaults[type])
+          }
+          return parseFloat(location.coords[type]);
+          //return parseInt(location[type]);
+      }
+
+

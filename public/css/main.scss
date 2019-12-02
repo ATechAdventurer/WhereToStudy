@@ -1,0 +1,532 @@
+@import "themes/default/variables";
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/@ladjs/bootstrap-social/bootstrap-social.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands";
+@import "node_modules/@fortawesome/fontawesome-free/scss/regular";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import url("https://use.typekit.net/fah3zzs.css");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import "themes/default/default";
+
+// Scaffolding
+// -------------------------
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+
+  p,
+  ul {
+    margin-bottom: 0;
+  }
+}
+
+// Input Fields
+// -------------------------
+
+textarea {
+  resize: vertical;
+}
+
+// Navbar
+// -------------------------
+
+.navbar-nav img {
+  width: 30px;
+  min-height: 30px;
+  margin: -15px 15px -15px;
+}
+
+.navbar {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.navbar-brand {
+  font-size: 18px;
+  float: left;
+}
+
+.navbar-toggler {
+  position: relative;
+  float: right;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.navbar-toggler-icon {
+  font-size: 16px;
+}
+
+.dropdown-menu {
+  left: initial;
+  right: 0;
+}
+
+/*
+* Solves Bootstrap 4 issue
+* https://github.com/twbs/bootstrap/issues/25654
+*/
+/* Styles in sm disposition and up */
+@media (min-width: 576px) and (max-width: 767px) {
+
+  /* Solves bs4 bug */
+  .navbar-expand-md>.container,
+  .navbar-expand-lg>.container,
+  .navbar-expand-xl>.container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+/* Styles in md disposition and up */
+@media (min-width: 768px) and (max-width: 991px) {
+
+  /* Solves bs4 bug */
+  .navbar-expand-lg>.container,
+  .navbar-expand-xl>.container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+/* Styles in lg disposition and up */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+  /* Solves bs4 bug */
+  .navbar-expand-xl>.container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+// Alerts
+// -------------------------
+
+.alert {
+  margin-top: 60px;
+}
+
+// Thumbnails
+// -------------------------
+
+.thumbnail {
+  padding: 0;
+  border-radius: 0;
+  box-shadow: 0 0 5px #ccc, inset 0 0 0 #000;
+}
+
+// Font Icons
+// -------------------------
+
+.fa {
+  margin-right: 6px;
+}
+
+.fab {
+  margin-right: 6px;
+}
+
+.fas {
+  margin-right: 6px;
+}
+
+.far {
+  margin-right: 6px;
+}
+
+// Basic Snapchat Button CSS
+.btn-snapchat {
+  background-color: #fffc00;
+  color: #000 !important;
+
+  &:hover,
+  &:active {
+    background-color: #f1ef00;
+  }
+}
+
+.mainContent {
+  padding-top: 45px;
+  width: 100vw;
+  display: flex;
+  min-height: 90vh;
+  margin: 0;
+  overflow: none;
+}
+
+.sidebar {
+  min-width: 175px;
+  height: 100vh;
+  flex: .25;
+  overflow: hidden;
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.map {
+  height: 100vh;
+  flex: 1;
+}
+
+#mainArea {
+  margin-left: -15px !important;
+  margin-right: 0px !important;
+  padding-top: -20px;
+}
+
+body {
+  color: white;
+  font: 400 15px/22px 'Open Sans', Sans-serif;
+  margin: 0;
+  padding: 0px;
+  -webkit-font-smoothing: antialiased;
+  margin-bottom: 75px;
+  font-size: 14px;
+  background-color: $dark;
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.pad2 {
+  padding: 20px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 20px 2px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #101010;
+}
+
+.heading {
+  font-family: proxima-nova, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  min-height: 60px;
+  line-height: 60px;
+  padding: 0 10px;
+  background-color: #00853e;
+  color: #fff;
+}
+
+.listings {
+  height: 100%;
+  overflow: auto;
+  padding-bottom: 60px;
+}
+
+.item {
+  color: whitesmoke;
+}
+
+.listings .item {
+  display: block;
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.listings .item:last-child {
+  border-bottom: none;
+}
+
+.listings .item .title {
+  display: block;
+  color: white;
+  font-weight: 700;
+}
+
+.listings .item .title small {
+  font-weight: 400;
+}
+
+.listings .item.active .title,
+.listings .item .title:hover {
+  color: whitesmoke;
+}
+
+.listings .item.active {
+  background-color: #303030;
+  border: none;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  border-left: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00853e;
+  border-radius: 0;
+}
+
+.marker {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/Cafe.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.coffeeShop {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/Cafe.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.coworking {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/Coworking.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.resturant {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/Resturant.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.seatingArea {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/SeatingArea.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.library {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url('../svg/Library.svg');
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.clearfix {
+  display: block;
+}
+
+.clearfix:after {
+  content: '.';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* Marker tweaks */
+.mapboxgl-popup {
+  padding-bottom: 50px;
+}
+
+.mapboxgl-popup-close-button {
+  position: absolute;
+  right: 9px;
+  top: 0;
+  border: 0;
+  border-radius: 0 3px 0 0;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+}
+
+.mapboxgl-popup-content {
+  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  padding: 0;
+  width: 180px;
+  background-color: #505050 !important;
+}
+
+.mapboxgl-popup-content-wrapper {
+  padding: 1%;
+}
+
+.mapboxgl-popup-content h3 {
+  background: #91c949;
+  color: #fff;
+  margin: 0;
+  display: block;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+  margin-left: -10px;
+  width: 108%;
+}
+
+.mapboxgl-popup-content h4 {
+  margin: 0;
+  display: block;
+  padding: 10px;
+  font-weight: 400;
+}
+
+.mapboxgl-popup-content div {
+  padding: 10px;
+}
+
+.mapboxgl-container .leaflet-marker-icon {
+  cursor: pointer;
+}
+
+.mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+  margin-top: 15px;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: #505050 !important;
+}
+
+.mapboxgl-popup-content h4 {
+  color: white;
+}
+
+.label-holder {
+  width: 100%;
+  height: 20px;
+  padding: 5px;
+  position: relative;
+  top: -7px;
+}
+
+.mapboxgl-popup-content {
+  width: 32vw;
+  height: 350px;
+  max-width: 500px;
+}
+
+@media only screen and (max-width : 640px) {
+  .sidebar {
+    display: none;
+  }
+
+  .mapboxgl-popup-content {
+    width: 80vw;
+    height: 350px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .mapboxgl-popup-content {
+    width: 80vw;
+    height: 350px;
+  }
+}
+
+.badge {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wifi-badge {
+  background-color: #7f8c8d;
+}
+
+.outlet-badge {
+  background-color: #f1c40f;
+}
+
+.quiet-badge {
+  background-color: #9b59b6;
+}
+
+.costs-badge {
+  background-color: #e67e22;
+}
+
+.badge-right {
+  float: right;
+}
+
+.cafe-heading,
+.coffeeShop-heading {
+  background-color: #1ABC9C !important;
+}
+
+.library-heading {
+  background-color: #e17055 !important;
+}
+
+.seatingArea-heading {
+  background-color: #0984e3 !important;
+}
+
+.coworking-heading {
+  background-color: #D35400 !important;
+}
+
+.mapboxgl-popup-anchor-top>.coworking {
+  border-bottom-color: #D35400 !important;
+}
+
+.mapboxgl-popup-anchor-top>.coffeeShop {
+  border-bottom-color: #1ABC9C !important;
+}
+
+.star-off {
+  color: grey;
+}
+
+.star-on {
+  color: #fdcb6e;
+}
+
+.coffeeShop-link,
+.cafe-heading {
+  color: #1ABC9C !important;
+}
+
+.dark {
+  background-color: #121212;
+}
